@@ -85,8 +85,10 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (collision.gameObject.CompareTag("NonBreakPart"))
                 {
-                    rigidbody.isKinematic = true;
-                    Debug.Log("GameOver");
+                    /*rigidbody.isKinematic = true;
+                    Debug.Log("GameOver");*/
+                    gameController.GameOver(transform.position);
+                    gameObject.SetActive(false);
                 }
             }
         }

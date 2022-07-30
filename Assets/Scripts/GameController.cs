@@ -8,8 +8,15 @@ public class GameController : MonoBehaviour
     private PlatformSpawner platformSpawner;
     [SerializeField]
     private UIController uIController;
+    [Header("SFX")]
+    [SerializeField]
+    private AudioClip gameOverClip;
+    [Header("VFX")]
+    [SerializeField]
+    private GameObject gameOverEffect;
 
     private RandomColor randomColor;
+    private AudioSource audioSource;
     public bool IsGamePlay { private set; get; } = false;
 
     private int brokenPlatformCount = 0;
@@ -17,6 +24,7 @@ public class GameController : MonoBehaviour
     private int currentScore = 0;
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         totalPlatformCount = platformSpawner.SpawnPlatform();
 
         //platformSpawner.SpawnPlatform();
@@ -40,6 +48,36 @@ public class GameController : MonoBehaviour
         Debug.Log("Start");
         IsGamePlay = true;
         uIController.GameStart();
+    }
+    public void GameOver(Vector3 position)
+    {
+        IsGamePlay = false;
+        audioSource.clip = gameOverClip;
+        audioSource.Play();
+        gameOverEffect.transform.position = position;
+        gameOverEffect.SetActive(true);
+
+        UpdateHighScore();
+        uIController.GameOver(currentScore);
+        StartCoroutine(nameof(SceneLoadOnClick));
+    }
+    private void UpdateHighScore()
+    {
+        if(currentScore > PlayerPrefs.GetInt("HIGHSCORE"))
+        {
+            PlayerPrefs.SetInt("HIGHSCORE", currentScore);
+        }
+    }
+    private IEnumerator SceneLoadOnClick()
+    {
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            }
+            yield return null;
+        }
     }
     public void OnCollisionWithPlatform(int addedScore = 1)
     {

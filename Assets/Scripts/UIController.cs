@@ -12,6 +12,12 @@ public class UIController : MonoBehaviour
     private TextMeshProUGUI nextLevel;
     [SerializeField]
     private TextMeshProUGUI currentScore;
+    [SerializeField]
+    private GameObject gameOverPanel;
+    [SerializeField]
+    private TextMeshProUGUI textCurrentScore;
+    [SerializeField]
+    private TextMeshProUGUI textHighScore;
     [Header("Main")]
     [SerializeField]
     private GameObject mainPanel;
@@ -27,10 +33,12 @@ public class UIController : MonoBehaviour
     {
         mainPanel.gameObject.SetActive(false);
     }
-    // Start is called before the first frame update
-    void Start()
+    public void GameOver(int currentScore)
     {
-        
+        textCurrentScore.text = $"SCORE\n{currentScore}";
+        textHighScore.text = $"HIGH SCORE\n{PlayerPrefs.GetInt("HIGHSCORE")}";
+        gameOverPanel.SetActive(true);
+        PlayerPrefs.SetInt("DEACTIVATEMAIN", 0);
     }
     public float LevelProgressBar { set => levelProgessBar.fillAmount = value; }
     public int CurrentScore { set => currentScore.text = value.ToString(); }
