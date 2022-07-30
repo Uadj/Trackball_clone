@@ -32,14 +32,12 @@ public class PlatformCoontroller : MonoBehaviour
         gameObject.SetActive(false);
     }
     // Start is called before the first frame update
-    void Start()
-    {
-        Invoke(nameof(BreakAllParts), Mathf.Abs(transform.position.y));    
-    }
+    //void Start()
+    //{
+    //    Invoke(nameof(BreakAllParts), Mathf.Abs(transform.position.y));    
+    //}
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+    
 }
