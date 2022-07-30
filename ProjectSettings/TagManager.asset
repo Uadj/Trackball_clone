@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BreakPart
   - NonBreakPart
+  - LastPlatform
   layers:
   - Default
   - TransparentFX

@@ -12,7 +12,7 @@ public class PlatformSpawner : MonoBehaviour
     public int SpawnPlatform()
     {
         Transform[] platforms = SetupPlatformFigure();
-        int platformCount = 200; //SetupPlatformCount();
+        int platformCount = SetupPlatformCount();
         var indexs = SetupStartAndEndIndex(platforms);
 
         for(int i=0; i<platformCount; ++i)

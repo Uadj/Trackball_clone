@@ -92,7 +92,11 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        
+        if(collision.gameObject.CompareTag("LastPlatform") && gameController.IsGamePlay)
+        {
+            playerPowerMode.DeactivateAll();
+            gameController.GameClear();
+        }
         //rigidbody.velocity = new Vector3(0, bounceForce, 0);
         //PlaySound(bounceClip);
         //OnSplashImage(collision.transform);
@@ -103,7 +107,7 @@ public class PlayerController : MonoBehaviour
     {
         if (rigidbody.velocity.y > 0) return;
         //Debug.Log("OnCollisonStay");
-        if (isClicked) return;
+        if (isClicked && !collision.gameObject.CompareTag("LastPlatform")) return;
         OnJumpProcess(collision);
     }
     private void OnJumpProcess(Collision collision)

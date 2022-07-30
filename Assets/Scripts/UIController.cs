@@ -24,10 +24,24 @@ public class UIController : MonoBehaviour
     [Header("InGame")]
     [SerializeField]
     private Image levelProgessBar;
+    [Header("GameClear")]
+    [SerializeField]
+    private GameObject gameClearPanel;
+    [SerializeField]
+    private TextMeshProUGUI textLevelCompleted;
     private void Awake()
     {
         currentLevel.text = (PlayerPrefs.GetInt("LEVEL") + 1).ToString();
         nextLevel.text = (PlayerPrefs.GetInt("LEVEL") + 2).ToString();
+
+        if (PlayerPrefs.GetInt("DEACTIVATEMAIN") == 0) mainPanel.SetActive(true);
+        else mainPanel.SetActive(false);
+    }
+    public void GameClear()
+    {
+        textLevelCompleted.text = $"LEVEL {PlayerPrefs.GetInt("LEVEL") + 1}\nCOMPLETED!";
+        gameClearPanel.SetActive(true);
+        PlayerPrefs.SetInt("DEACTIVATEMAIN", 1);
     }
     public void GameStart()
     {
