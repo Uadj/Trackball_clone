@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private GameController gameController;
     [Header("Paramerter")]
     [SerializeField]
     private float bounceForce = 5;
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        if (!gameController.IsGamePlay) return;
         UpdateMouseButton();
         UpdateDropToSmash();
     }
@@ -53,6 +56,7 @@ public class PlayerController : MonoBehaviour
                 {
                     platform.BreakAllParts();
                     PlaySound(normalBreakClip);
+                    gameController.OnCollisionWithPlatform();
                 }
             }
             else if (collision.gameObject.CompareTag("NonBreakPart"))
