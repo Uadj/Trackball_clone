@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private AudioClip bounceClip;
     [SerializeField]
     private AudioClip normalBreakClip;
+    [SerializeField]
+    private AudioClip powerBreakClip;
     [Header("VFX")]
     [SerializeField]
     private Material playerMaterial;
@@ -28,9 +30,12 @@ public class PlayerController : MonoBehaviour
     private new Rigidbody rigidbody;
     private AudioSource audioSource;
     private bool isClicked = false;
+    private PlayerPowerMode playerPowerMode;
+
     private Vector3 splashWeight = new Vector3(0, 0.22f, 0.1f);
     private void Awake()
     {
+        playerPowerMode = GetComponent<PlayerPowerMode>();
         rigidbody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
     }
@@ -39,6 +44,7 @@ public class PlayerController : MonoBehaviour
         if (!gameController.IsGamePlay) return;
         UpdateMouseButton();
         UpdateDropToSmash();
+        playerPowerMode.UpdatePowerMode(isClicked);
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -49,22 +55,42 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (collision.gameObject.CompareTag("BreakPart"))
+            //if (collision.gameObject.CompareTag("BreakPart"))
+            //{
+            //    var platform = collision.transform.parent.GetComponent<PlatformCoontroller>();
+            //    if(platform.isCollision == false)
+            //    {
+            //        platform.BreakAllParts();
+            //        PlaySound(normalBreakClip);
+            //        gameController.OnCollisionWithPlatform();
+            //    }
+            //}
+            //else if (collision.gameObject.CompareTag("NonBreakPart"))
+            //{
+            //    rigidbody.isKinematic = true;
+            //    Debug.Log("GameOver");
+            //}
+            if (playerPowerMode.IsPowerMode)
             {
-                var platform = collision.transform.parent.GetComponent<PlatformCoontroller>();
-                if(platform.isCollision == false)
+                if (collision.gameObject.CompareTag("BreakPart") || collision.gameObject.CompareTag("NonBreakPart"))
                 {
-                    platform.BreakAllParts();
-                    PlaySound(normalBreakClip);
-                    gameController.OnCollisionWithPlatform();
+                    OnCollisionWithBreakPart(collision, powerBreakClip, 2);
                 }
             }
-            else if (collision.gameObject.CompareTag("NonBreakPart"))
+            else
             {
-                rigidbody.isKinematic = true;
-                Debug.Log("GameOver");
+                if (collision.gameObject.CompareTag("BreakPart"))
+                {
+                    OnCollisionWithBreakPart(collision, normalBreakClip, 1);
+                }
+                else if (collision.gameObject.CompareTag("NonBreakPart"))
+                {
+                    rigidbody.isKinematic = true;
+                    Debug.Log("GameOver");
+                }
             }
         }
+        
         //rigidbody.velocity = new Vector3(0, bounceForce, 0);
         //PlaySound(bounceClip);
         //OnSplashImage(collision.transform);
@@ -75,6 +101,7 @@ public class PlayerController : MonoBehaviour
     {
         if (rigidbody.velocity.y > 0) return;
         //Debug.Log("OnCollisonStay");
+        if (isClicked) return;
         OnJumpProcess(collision);
     }
     private void OnJumpProcess(Collision collision)
@@ -131,6 +158,17 @@ public class PlayerController : MonoBehaviour
         if(Input.GetMouseButton(0) && isClicked)
         {
             rigidbody.velocity = new Vector3(0, DropForce, 0);
+        }
+    }
+    private void OnCollisionWithBreakPart(Collision collision, AudioClip clip, int addedScore)
+    {
+        var platform = collision.transform.parent.GetComponent<PlatformCoontroller>();
+
+        if(platform.isCollision == false)
+        {
+            platform.BreakAllParts();
+            PlaySound(clip);
+            gameController.OnCollisionWithPlatform(addedScore);
         }
     }
 }

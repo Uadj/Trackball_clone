@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
     }
     private void GameStart()
     {
+        Debug.Log("Start");
         IsGamePlay = true;
         uIController.GameStart();
     }
